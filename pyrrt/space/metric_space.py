@@ -1,16 +1,26 @@
 from __future__ import annotations
 
-import abc
+import math
 import typing
 
 import typing_extensions
 
 
 def euclidean_distance(first: T, second: T) -> float:
-    return 0.0
+    def distance() -> float:
+        return math.sqrt(squared_distance())
+
+    def squared_distance() -> float:
+        field_names = vars(first).keys()
+        return sum([field_squared_distance(fn) for fn in field_names])
+
+    def field_squared_distance(field_name: str) -> float:
+        return (getattr(first, field_name) - getattr(second, field_name)) ** 2
+
+    return distance()
 
 
-class MetricSpace(abc.ABC):
+class MetricSpace:
     def __init__(
         self,
         distance_function: DistanceFunction[
