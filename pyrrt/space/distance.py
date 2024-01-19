@@ -3,7 +3,8 @@ from __future__ import annotations
 import math
 import typing
 
-import typing_extensions
+T = typing.TypeVar("T")
+T_contra = typing.TypeVar("T_contra", contravariant=True)
 
 
 def euclidean_distance(first: T, second: T) -> float:
@@ -18,23 +19,6 @@ def euclidean_distance(first: T, second: T) -> float:
         return (getattr(first, field_name) - getattr(second, field_name)) ** 2
 
     return distance()
-
-
-class MetricSpace:
-    def __init__(
-        self,
-        distance_function: DistanceFunction[
-            typing_extensions.Self
-        ] = euclidean_distance,
-    ) -> None:
-        self._distance_function = distance_function
-
-    def distance_to(self, other: typing_extensions.Self) -> float:
-        return self._distance_function(self, other)
-
-
-T = typing.TypeVar("T", bound=MetricSpace)
-T_contra = typing.TypeVar("T_contra", bound=MetricSpace, contravariant=True)
 
 
 class DistanceFunction(typing.Protocol, typing.Generic[T_contra]):

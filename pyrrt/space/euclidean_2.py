@@ -1,6 +1,7 @@
-from .metric_space import MetricSpace
+import dataclasses
 
 
-class Euclidean2(MetricSpace):
+@dataclasses.dataclass()
+class Euclidean2:
     x: float
     y: float

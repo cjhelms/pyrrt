@@ -8,6 +8,7 @@ import pyrrt
 def test_rrt_should_construct_with_valid_arguments() -> None:
     pyrrt.planner.RRT(
         pyrrt.space.Euclidean2,
+        pyrrt.space.euclidean_distance,
         pyrrt.steer.straight_path,
         pyrrt.region.AllSpaceAndTime(),
     )
@@ -15,7 +16,7 @@ def test_rrt_should_construct_with_valid_arguments() -> None:
 
 def test_euclidean_distance_should_compute_euclidean_distance() -> None:
     @dataclasses.dataclass
-    class ArbitrarySpace(pyrrt.space.MetricSpace):
+    class ArbitrarySpace:
         a: float
         b: float
         c: float
@@ -40,20 +41,18 @@ def test_euclidean_distance_should_compute_euclidean_distance() -> None:
 
 def test_euclidean_distance_should_work_with_any_metric_space() -> None:
     @dataclasses.dataclass
-    class FirstSpace(pyrrt.space.MetricSpace):
+    class FirstSpace:
         x: float
         y: float
 
     @dataclasses.dataclass
-    class SecondSpace(pyrrt.space.MetricSpace):
+    class SecondSpace:
         a: float
         b: float
         c: float
         d: float
 
-    def compute_distance_and_check(
-        first_point: pyrrt.space.MetricSpace, second_point: pyrrt.space.MetricSpace
-    ) -> None:
+    def compute_distance_and_check(first_point: object, second_point: object) -> None:
         distance = pyrrt.space.euclidean_distance(first_point, second_point)
         EXPECTED_DISTANCE = 1.0
         assert distance == EXPECTED_DISTANCE
