@@ -52,7 +52,9 @@ def test_euclidean_distance_should_work_with_any_metric_space() -> None:
         c: float
         d: float
 
-    def compute_distance_and_check(first_point: object, second_point: object) -> None:
+    def compute_distance_and_check(
+        first_point: pyrrt.space.T, second_point: pyrrt.space.T
+    ) -> None:
         distance = pyrrt.space.euclidean_distance(first_point, second_point)
         EXPECTED_DISTANCE = 1.0
         assert distance == EXPECTED_DISTANCE
