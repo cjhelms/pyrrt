@@ -3,13 +3,7 @@ from __future__ import annotations
 import math
 import typing
 
-
-class Dataclass(typing.Protocol):
-    __dataclass_fields__: typing.ClassVar[typing.Dict[str, typing.Any]]
-
-
-T = typing.TypeVar("T", bound=Dataclass)
-T_contra = typing.TypeVar("T_contra", bound=Dataclass, contravariant=True)
+from .interface import T, T_contra
 
 
 def euclidean_distance(first: T, second: T) -> float:
