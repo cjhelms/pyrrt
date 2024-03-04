@@ -1,2 +1,1 @@
-from .interface import *
-from .rrt import *
+from .rrt import *  # noqa

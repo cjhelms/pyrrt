@@ -1,2 +1,2 @@
-from .interface import *
-from .straight_path import *
+from .interface import *  # noqa
+from .straight_path import *  # noqa
