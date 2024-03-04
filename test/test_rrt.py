@@ -11,6 +11,7 @@ def test_rrt_should_construct_with_valid_arguments() -> None:
         pyrrt.space.euclidean_distance,
         pyrrt.steer.straight_path,
         pyrrt.region.AllSpaceAndTime(),
+        lambda node_count: True,
     )
 
 
