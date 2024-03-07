@@ -10,7 +10,10 @@ class AllSpaceAndTime(pyrrt.region.interface.IRegion[pyrrt.space.interface.T]):
     def __contains__(
         self, point: pyrrt.space.point_in_time.PointInTime[pyrrt.space.interface.T]
     ) -> bool:
-        return True
+        # TODO
+        raise NotImplementedError()
 
     @typing.override
-    def draw_sample(self) -> pyrrt.space.interface.T: ...
+    def draw_sample(self) -> pyrrt.space.interface.T:
+        # TODO
+        raise NotImplementedError()
