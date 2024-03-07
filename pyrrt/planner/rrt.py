@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import typing
 
-import typing_extensions
-
-from pyrrt import region, space, steer
-
-from . import core
+import pyrrt.planner.core
+import pyrrt.region.interface
+import pyrrt.space.distance
+import pyrrt.space.interface
+import pyrrt.steer.interface
 
 
 class _Metadata:
@@ -15,13 +15,15 @@ class _Metadata:
         return _Metadata()
 
 
-class RRT(core.CoreRRT[space.T, _Metadata]):
+class RRT(pyrrt.planner.core.CoreRRT[pyrrt.space.interface.T, _Metadata]):
     def __init__(
         self,
-        space_class: typing.Type[space.T],
-        distance_function: space.DistanceFunction[space.T],
-        steer_function: steer.SteerFunction[space.T],
-        free_space: region.IRegion[space.T],
+        space_class: typing.Type[pyrrt.space.interface.T],
+        distance_function: pyrrt.space.distance.DistanceFunction[
+            pyrrt.space.interface.T
+        ],
+        steer_function: pyrrt.steer.interface.SteerFunction[pyrrt.space.interface.T],
+        free_space: pyrrt.region.interface.IRegion[pyrrt.space.interface.T],
         stop_criteria: StopCriteria,
     ) -> None:
         super().__init__(_Metadata, distance_function)
@@ -31,7 +33,7 @@ class RRT(core.CoreRRT[space.T, _Metadata]):
         self._free_space = free_space
         self._stop_criteria = stop_criteria
 
-    @typing_extensions.override
+    @typing.override
     def _explore(self) -> None:
         while not self._stop_criteria(len(self)):
             self._maybe_extend_tree()
@@ -41,7 +43,7 @@ class RRT(core.CoreRRT[space.T, _Metadata]):
         nearest_node = self._find_nearest_neighbor(random_point)
         new_point = self._steer_function(nearest_node.point, random_point)
         if new_point in self._free_space:
-            nearest_node.add_child(core.Node(new_point, _Metadata()))
+            nearest_node.add_child(pyrrt.planner.core.Node(new_point, _Metadata()))
 
 
 class StopCriteria(typing.Protocol):

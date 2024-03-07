@@ -3,10 +3,12 @@ from __future__ import annotations
 import math
 import typing
 
-from .interface import T, T_contra
+import pyrrt.space.interface
 
 
-def euclidean_distance(first: T, second: T) -> float:
+def euclidean_distance(
+    first: pyrrt.space.interface.T, second: pyrrt.space.interface.T
+) -> float:
     def distance() -> float:
         return math.sqrt(squared_distance())
 
@@ -20,6 +22,9 @@ def euclidean_distance(first: T, second: T) -> float:
     return distance()
 
 
-class DistanceFunction(typing.Protocol, typing.Generic[T_contra]):
-    def __call__(self, first: T_contra, second: T_contra) -> float:
-        ...
+class DistanceFunction(typing.Protocol, typing.Generic[pyrrt.space.interface.T_contra]):
+    def __call__(
+        self,
+        first: pyrrt.space.interface.T_contra,
+        second: pyrrt.space.interface.T_contra,
+    ) -> float: ...

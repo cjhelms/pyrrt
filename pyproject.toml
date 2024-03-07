@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyrrt"
+version = "0.0.0"
+description = "Python implementation of Rapid-Exploring Random Trees"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+  {name = "Chris Helms", email = "cjhelms1428@gmail.com" }
+]
+
+maintainers = [
+  {name = "Chris Helms", email = "cjhelms1428@gmail.com" }
+]

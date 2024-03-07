@@ -1,8 +1,10 @@
-from pyrrt import space
+import pyrrt.space.interface
+import pyrrt.space.point_in_time
 
 
 def straight_path(
-    current: space.PointInTime[space.T], target: space.T
-) -> space.PointInTime[space.T]:
+    current: pyrrt.space.point_in_time.PointInTime[pyrrt.space.interface.T],
+    target: pyrrt.space.interface.T,
+) -> pyrrt.space.point_in_time.PointInTime[pyrrt.space.interface.T]:
     # TODO
     raise NotImplementedError()

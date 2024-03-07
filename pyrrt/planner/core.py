@@ -5,43 +5,48 @@ import copy
 import dataclasses
 import typing
 
-import typing_extensions
-
-from pyrrt import space
-
-from .kd_tree import KDTree
+import pyrrt.planner._kd_tree
+import pyrrt.space.distance
+import pyrrt.space.interface
+import pyrrt.space.point_in_time
 
 
 class Metadata(typing.Protocol):
     @classmethod
-    def make_root(cls) -> typing_extensions.Self: ...
+    def make_root(cls) -> typing.Self: ...
 
 
 _MT = typing.TypeVar("_MT", bound=Metadata)
 
 
-class CoreRRT(typing.Generic[space.T, _MT], abc.ABC):
+class CoreRRT(typing.Generic[pyrrt.space.interface.T, _MT], abc.ABC):
     def __init__(
         self,
         metadata_class: typing.Type[_MT],
-        distance_function: space.DistanceFunction[space.T],
+        distance_function: pyrrt.space.distance.DistanceFunction[
+            pyrrt.space.interface.T
+        ],
     ) -> None:
         self.__metadata_class = metadata_class
 
-        def get_point(node: Node[space.T, _MT]) -> space.T:
+        def get_point(
+            node: Node[pyrrt.space.interface.T, _MT]
+        ) -> pyrrt.space.interface.T:
             return node.point.point
 
-        self.__kd_tree = KDTree(get_point, distance_function)
+        self.__kd_tree = pyrrt.planner._kd_tree.KDTree(get_point, distance_function)
 
     @typing.final
-    def explore(self, initial_point: space.T) -> None:
+    def explore(self, initial_point: pyrrt.space.interface.T) -> None:
         if len(self.__kd_tree) > 0:
             raise self.AlreadyExploredError(
                 "Must create a new RRT object to explore again!"
             )
         self.__kd_tree.insert(
             Node(
-                space.PointInTime.make_with_starting_time_stamp(initial_point),
+                pyrrt.space.point_in_time.PointInTime.make_with_starting_time_stamp(
+                    initial_point
+                ),
                 self.__metadata_class.make_root(),
             )
         )
@@ -52,7 +57,9 @@ class CoreRRT(typing.Generic[space.T, _MT], abc.ABC):
         raise NotImplementedError()
 
     @typing.final
-    def _find_nearest_neighbor(self, point: space.T) -> NodeView[space.T, _MT]:
+    def _find_nearest_neighbor(
+        self, point: pyrrt.space.interface.T
+    ) -> NodeView[pyrrt.space.interface.T, _MT]:
         assert len(self.__kd_tree) > 0, "Must start exploration before searching tree!"
         return NodeView(self.__kd_tree.find_nearest_neighbor(point), self.__kd_tree)
 
@@ -65,25 +72,31 @@ class CoreRRT(typing.Generic[space.T, _MT], abc.ABC):
 
 
 @dataclasses.dataclass
-class Node(typing.Generic[space.T, _MT]):
-    point: space.PointInTime[space.T]
+class Node(typing.Generic[pyrrt.space.interface.T, _MT]):
+    point: pyrrt.space.point_in_time.PointInTime[pyrrt.space.interface.T]
     metadata: _MT
 
 
-class NodeView(typing.Generic[space.T, _MT]):
+class NodeView(typing.Generic[pyrrt.space.interface.T, _MT]):
     def __init__(
-        self, node: Node[space.T, _MT], kd_tree: KDTree[space.T, Node[space.T, _MT]]
+        self,
+        node: Node[pyrrt.space.interface.T, _MT],
+        kd_tree: pyrrt.planner._kd_tree.KDTree[
+            pyrrt.space.interface.T, Node[pyrrt.space.interface.T, _MT]
+        ],
     ) -> None:
         self._node = node
         self._kd_tree = kd_tree
 
     @property
-    def point(self) -> space.PointInTime[space.T]:
+    def point(
+        self,
+    ) -> pyrrt.space.point_in_time.PointInTime[pyrrt.space.interface.T]:
         return copy.copy(self._node.point)
 
     @property
     def metadata(self) -> _MT:
         return copy.copy(self._node.metadata)
 
-    def add_child(self, value: Node[space.T, _MT]) -> None:
+    def add_child(self, value: Node[pyrrt.space.interface.T, _MT]) -> None:
         self._kd_tree.insert(value)

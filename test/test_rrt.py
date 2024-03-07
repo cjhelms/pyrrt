@@ -2,15 +2,20 @@ from __future__ import annotations
 
 import dataclasses
 
-import pyrrt
+import pyrrt.planner.rrt
+import pyrrt.region.all_space_and_time
+import pyrrt.space.distance
+import pyrrt.space.euclidean_2
+import pyrrt.space.interface
+import pyrrt.steer.straight_path
 
 
 def test_rrt_should_construct_with_valid_arguments() -> None:
-    pyrrt.planner.RRT(
-        pyrrt.space.Euclidean2,
-        pyrrt.space.euclidean_distance,
-        pyrrt.steer.straight_path,
-        pyrrt.region.AllSpaceAndTime(),
+    pyrrt.planner.rrt.RRT(
+        pyrrt.space.euclidean_2.Euclidean2,
+        pyrrt.space.distance.euclidean_distance,
+        pyrrt.steer.straight_path.straight_path,
+        pyrrt.region.all_space_and_time.AllSpaceAndTime(),
         lambda node_count: True,
     )
 
@@ -24,7 +29,7 @@ def test_euclidean_distance_should_compute_euclidean_distance() -> None:
 
     FIRST_POINT = ArbitrarySpace(1.0, 2.0, 3.0)
     SECOND_POINT = ArbitrarySpace(5.0, 4.0, 6.0)
-    distance = pyrrt.space.euclidean_distance(FIRST_POINT, SECOND_POINT)
+    distance = pyrrt.space.distance.euclidean_distance(FIRST_POINT, SECOND_POINT)
     # || p1 - p2 ||2
     #   =
     # ( ( p1.a - p2.a  )^2 + ( p1.b - p2.b )^2 + ( p1.c - p2.c )^2 )^( 1/2 )
@@ -54,9 +59,9 @@ def test_euclidean_distance_should_work_with_any_metric_space() -> None:
         d: float
 
     def compute_distance_and_check(
-        first_point: pyrrt.space.T, second_point: pyrrt.space.T
+        first_point: pyrrt.space.interface.T, second_point: pyrrt.space.interface.T
     ) -> None:
-        distance = pyrrt.space.euclidean_distance(first_point, second_point)
+        distance = pyrrt.space.distance.euclidean_distance(first_point, second_point)
         EXPECTED_DISTANCE = 1.0
         assert distance == EXPECTED_DISTANCE
 
