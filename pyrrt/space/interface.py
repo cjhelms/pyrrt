@@ -2,7 +2,7 @@ import typing
 
 
 class Dataclass(typing.Protocol):
-    __dataclass_fields__: typing.ClassVar[typing.Dict[str, typing.Any]]
+    __dataclass_fields__: typing.ClassVar[typing.Dict[str, float]]
 
 
 T = typing.TypeVar("T", bound=Dataclass)
